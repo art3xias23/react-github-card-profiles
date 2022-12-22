@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
+import axios from "axios";
 
 const testData = [
   {
@@ -23,46 +24,63 @@ const testData = [
 
 const CardList = (props) => (
   <div>
-    {testData.map(profile => <Card {...profile} />)}
-    </div>
+    {props.profiles.map(profile => <Card {...profile}/>)}
+  </div>
+);
+
+class Form extends React.Component {
+  state = {userName:""} 
+  clickEvent = async (event) =>{
+    event.preventDefault();
+     const resp = await axios.get(`https://api.github.com/users/${this.state.userName}`);
+     this.props.onSubmit(resp.data);
+     this.setState({username:""});
+  }
+  render() {
+    return (
+      <>
+        <input type="text" value={this.state.userName}
+        onChange={event => this.setState({userName: event.target.value})} placeholder="github username"></input>
+        <button onClick={this.clickEvent}>AddCard</button>
+      </>
     );
+  }
+}
 
-    class Form extends React.Component{
-      render(){
-        return(
-          <>
-          <input type="text" placeholder="github username"></input>
-          <button>AddCard</button>
-          </>
-        )
-      }
-    }
-
-
-class Card extends React.Component{
-  render(){
-  const profile = this.props;
-    return(
-        <>
+class Card extends React.Component {
+  render() {
+    const profile = this.props;
+    return (
+      <>
         <div className="github-profile">
-          <img src={profile.avatar_url}/>
+          <img src={profile.avatar_url} />
           <div className="info">
             <div className="name">{profile.name}</div>
             <div className="company">{profile.company}</div>
           </div>
         </div>
-        </>
-    )
+      </>
+    );
   }
 }
 class App extends React.Component {
+  state = {
+    profiles: testData,
+  };
+
+  addNewProfile = (profileData) =>{
+    this.setState(prevState => ({
+      profiles: [...prevState.profiles, profileData]
+    }))
+  }
+
   render() {
-    return( 
-    <>
-      <div>{this.props.title}</div>
-      <Form/>
-      <CardList/>
-    </>
+    return (
+      <>
+        <div>{this.props.title}</div>
+        <Form onSubmit={this.addNewProfile} />
+        <CardList profiles = {this.state.profiles} />
+      </>
     );
   }
 }
