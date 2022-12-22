@@ -1,13 +1,30 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import reportWebVitals from "./reportWebVitals";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+class Card extends React.Component {
+  render() {
+    return (
+      <div>
+        <div>Name</div>
+        <div>Company</div>
+      </div>
+    );
+  }
+}
+
+class App extends React.Component {
+  render() {
+    return <div>{this.props.title}</div>;
+  }
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <App title="GitHub Cards App" />
+    <Card />
   </React.StrictMode>
 );
 
