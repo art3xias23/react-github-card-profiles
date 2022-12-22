@@ -9,14 +9,21 @@ const testData = [
   {name: "Sebastian Markbåge", avatar_url: "https://avatars2.githubusercontent.com/u/63648?v=4", company: "Facebook"},
 ];
 
+const CardList = (props) => (
+  <div>
+    {testData.map(profile => <Card {...profile}/>)}
+  </div>
+)
+
 class Card extends React.Component {
   render() {
+    const profile = this.props;
     return (
       <div className="github-profile">
-        <img src="https://placehold.it/75"></img>
+        <img src={profile.avatar_url}></img>
         <div className="info">
-          <div className="name">Name</div>
-          <div className="company">Company</div>
+          <div className="name">{profile.name}</div>
+          <div className="company">{profile.company}</div>
         </div>
       </div>
     );
@@ -25,7 +32,13 @@ class Card extends React.Component {
 
 class App extends React.Component {
   render() {
-    return <div>{this.props.title}</div>;
+    return( 
+    <div>
+      <div>
+        {this.props.title}
+        </div>
+        <CardList />
+    </div>);
   }
 }
 
@@ -33,7 +46,6 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <App title="GitHub Cards App" />
-    <Card />
   </React.StrictMode>
 );
 
