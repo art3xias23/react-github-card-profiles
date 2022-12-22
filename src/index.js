@@ -6,9 +6,12 @@ import reportWebVitals from "./reportWebVitals";
 class Card extends React.Component {
   render() {
     return (
-      <div>
-        <div>Name</div>
-        <div>Company</div>
+      <div className="github-profile">
+        <img src="https://placehold.it/75"></img>
+        <div className="info">
+          <div className="name">Name</div>
+          <div className="company">Company</div>
+        </div>
       </div>
     );
   }
