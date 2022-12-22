@@ -4,27 +4,16 @@ import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import axios from "axios";
 
-const testData = [
-  {
-    name: "Dan Abramov",
-    avatar_url: "https://avatars0.githubusercontent.com/u/810438?v=4",
-    company: "@facebook",
-  },
-  {
-    name: "Sophie Alpert",
-    avatar_url: "https://avatars2.githubusercontent.com/u/6820?v=4",
-    company: "Humu",
-  },
-  {
-    name: "Sebastian Markbåge",
-    avatar_url: "https://avatars2.githubusercontent.com/u/63648?v=4",
-    company: "Facebook",
-  },
-];
-
+//Tasks
+//Handle Errors
+  //Network Errors
+  //Wrong input
+//Extract the axios library to a seperate agent type module. Code should depend only on that one module.
+//Extract the state logic to a seperate module
+//Convert the classes to function components
 const CardList = (props) => (
   <div>
-    {props.profiles.map(profile => <Card {...profile}/>)}
+    {props.profiles.map(profile => <Card key={profile.id} {...profile}/>)}
   </div>
 );
 
@@ -65,13 +54,13 @@ class Card extends React.Component {
 }
 class App extends React.Component {
   state = {
-    profiles: testData,
+    profiles: [],
   };
 
   addNewProfile = (profileData) =>{
     this.setState(prevState => ({
       profiles: [...prevState.profiles, profileData]
-    }))
+    }));
   }
 
   render() {
