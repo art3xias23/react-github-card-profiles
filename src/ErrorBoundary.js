@@ -1,7 +1,4 @@
 import React from "react";
-
-//Only class components, in this case App
-//can have an ErrorBoundary
 class ErrorBoundary extends React.Component{
     constructor(props){
         super(props);
@@ -22,9 +19,8 @@ class ErrorBoundary extends React.Component{
     render(){
         if(this.state.hasError){
             //Any custom UI could be rendered here
-            return <h1>Ooops, something went wrong</h1>;
+            return <h1>Caught a rendering error in the console</h1>;
         }
-        //Usually render children, in this case App
         return this.props.children;
     }
 }
