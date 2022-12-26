@@ -3,33 +3,54 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import axios from "axios";
+import ErrorBoundary from "./ErrorBoundary.js";
 
 //Tasks
 //Handle Errors
-  //Network Errors
-  //Wrong input
+//Network Errors
+//Wrong input
 //Extract the axios library to a seperate agent type module. Code should depend only on that one module.
 //Extract the state logic to a seperate module
 //Convert the classes to function components
 const CardList = (props) => (
   <div>
-    {props.profiles.map(profile => <Card key={profile.id} {...profile}/>)}
+    {props.profiles.map((profile) => (
+      <Card key={profile.id} {...profile} />
+    ))}
   </div>
 );
 
 class Form extends React.Component {
-  state = {userName:""} 
-  clickEvent = async (event) =>{
-    event.preventDefault();
-     const resp = await axios.get(`https://api.github.com/users/${this.state.userName}`);
-     this.props.onSubmit(resp.data);
-     this.setState({username:""});
-  }
+  state = { userName: "", error: null };
+  clickEvent = async (event) => {
+    try {
+      //Testing the event handler try catch block
+      //throw "Caught some error";
+      event.preventDefault();
+      const resp = await axios.get(
+        `https://api.github.com/users/${this.state.userName}`
+      );
+      this.props.onSubmit(resp.data);
+      this.setState({ username: "" });
+    } catch (error) {
+      this.setState({ error: error });
+      console.log(error);
+    }
+  };
   render() {
+    //Simulating a render error to be caught by the ErrorBoundary
+    //throw new Error("Something crashed")
+    if(this.state.error){
+      return <h1>Caught an event handler error in the console</h1>
+    }
     return (
       <>
-        <input type="text" value={this.state.userName}
-        onChange={event => this.setState({userName: event.target.value})} placeholder="github username"></input>
+        <input
+          type="text"
+          value={this.state.userName}
+          onChange={(event) => this.setState({ userName: event.target.value })}
+          placeholder="github username"
+        ></input>
         <button onClick={this.clickEvent}>AddCard</button>
       </>
     );
@@ -55,20 +76,33 @@ class Card extends React.Component {
 class App extends React.Component {
   state = {
     profiles: [],
+    error: null
   };
 
-  addNewProfile = (profileData) =>{
-    this.setState(prevState => ({
-      profiles: [...prevState.profiles, profileData]
+  addNewProfile = (profileData) => {
+    try{
+//throw "App component error";
+    this.setState((prevState) => ({
+      profiles: [...prevState.profiles, profileData],
     }));
-  }
+    }
+    catch(error)
+    {
+      this.setState({error: error});
+      console.log(error)
+    }
+  };
 
   render() {
+      if (this.state.error)
+      {
+        return <h1>An error was logged to the console</h1>
+      }
     return (
       <>
         <div>{this.props.title}</div>
         <Form onSubmit={this.addNewProfile} />
-        <CardList profiles = {this.state.profiles} />
+        <CardList profiles={this.state.profiles} />
       </>
     );
   }
@@ -77,7 +111,9 @@ class App extends React.Component {
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App title="GitHub Cards App" />
+    <ErrorBoundary>
+      <App title="GitHub Cards App" />
+    </ErrorBoundary>
   </React.StrictMode>
 );
 
