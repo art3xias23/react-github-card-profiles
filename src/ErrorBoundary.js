@@ -19,7 +19,7 @@ class ErrorBoundary extends React.Component{
     render(){
         if(this.state.hasError){
             //Any custom UI could be rendered here
-            return <h1>Caught a rendering error in the console</h1>;
+            return <h1>Caught a child rendering error in the console</h1>;
         }
         return this.props.children;
     }

@@ -6,8 +6,6 @@ import axios from "axios";
 import ErrorBoundary from "./ErrorBoundary.js";
 
 //Tasks
-//Handle Errors
-//Network Errors
 //Wrong input
 //Extract the axios library to a seperate agent type module. Code should depend only on that one module.
 //Extract the state logic to a seperate module
@@ -27,11 +25,30 @@ class Form extends React.Component {
       //Testing the event handler try catch block
       //throw "Caught some error";
       event.preventDefault();
-      const resp = await axios.get(
-        `https://api.github.com/users/${this.state.userName}`
-      );
-      this.props.onSubmit(resp.data);
-      this.setState({ username: "" });
+      var resp;
+      try {
+         resp = await axios.get(
+          `https://api.github.com/users/${this.state.userName}`
+        );
+      } catch (error) {
+        resp = error.response
+        console.log("Axios request threw an error", error);
+        console.log(error.response.status);
+        console.log(error.response.data);
+        console.log(error.response.headers);
+      }
+
+      if (resp.status == 404) {
+        throw "Could not find username. Please refresh"
+        console.log(resp.message);
+      }
+      else if(resp.status != 200){
+        console.log(`Failed response: ${resp}`)
+      }
+       else {
+        this.props.onSubmit(resp.data);
+        this.setState({ username: "" });
+      }
     } catch (error) {
       this.setState({ error: error });
       console.log(error);
@@ -40,8 +57,8 @@ class Form extends React.Component {
   render() {
     //Simulating a render error to be caught by the ErrorBoundary
     //throw new Error("Something crashed")
-    if(this.state.error){
-      return <h1>Caught an event handler error in the console</h1>
+    if (this.state.error) {
+      return <h1>{this.state.error}</h1>;
     }
     return (
       <>
@@ -76,28 +93,25 @@ class Card extends React.Component {
 class App extends React.Component {
   state = {
     profiles: [],
-    error: null
+    error: null,
   };
 
   addNewProfile = (profileData) => {
-    try{
-//throw "App component error";
-    this.setState((prevState) => ({
-      profiles: [...prevState.profiles, profileData],
-    }));
-    }
-    catch(error)
-    {
-      this.setState({error: error});
-      console.log(error)
+    try {
+      //throw "App component error";
+      this.setState((prevState) => ({
+        profiles: [...prevState.profiles, profileData],
+      }));
+    } catch (error) {
+      this.setState({ error: error });
+      console.log(error);
     }
   };
 
   render() {
-      if (this.state.error)
-      {
-        return <h1>An error was logged to the console</h1>
-      }
+    if (this.state.error) {
+      return <h1>An error was logged to the console</h1>;
+    }
     return (
       <>
         <div>{this.props.title}</div>
