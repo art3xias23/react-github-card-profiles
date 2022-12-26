@@ -27,3 +27,8 @@ form {
   font-size: 1.5rem;
   margin-bottom: 1rem;
 }
+
+.error{
+  text-align: left;
+  color:red;
+}
