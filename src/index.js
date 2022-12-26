@@ -29,7 +29,7 @@ class Form extends React.Component {
       event.preventDefault();
       const resp = await getUsernameResponse(this.state.userName)
       if (resp.status == 404) {
-        throw "Could not find username. Please refresh"
+        this.setState({ error: "Could not find username" });
         console.log(resp.message);
       }
       else if(resp.status != 200){
@@ -38,6 +38,7 @@ class Form extends React.Component {
        else {
         this.props.onSubmit(resp.data);
         this.setState({ userName: "" });
+        this.setState({error: null})
       }
     } catch (error) {
       this.setState({ error: error });
@@ -47,9 +48,6 @@ class Form extends React.Component {
   render() {
     //Simulating a render error to be caught by the ErrorBoundary
     //throw new Error("Something crashed")
-    if (this.state.error) {
-      return <h1>{this.state.error}</h1>;
-    }
     return (
       <>
         <input
@@ -59,6 +57,7 @@ class Form extends React.Component {
           placeholder="github username"
         ></input>
         <button onClick={this.clickEvent}>AddCard</button>
+      {this.state.error && <div className="error">{this.state.error}</div>}
       </>
     );
   }
@@ -99,11 +98,9 @@ class App extends React.Component {
   };
 
   render() {
-    if (this.state.error) {
-      return <h1>An error was logged to the console</h1>;
-    }
     return (
       <>
+      {this.state.error && <div className="error">{this.state.error}</div>}
         <div>{this.props.title}</div>
         <Form onSubmit={this.addNewProfile} />
         <CardList profiles={this.state.profiles} />
