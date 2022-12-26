@@ -7,7 +7,6 @@ import { getUsernameResponse } from "./AxiosClient";
 
 //Tasks
 
-//Extract the axios library to a seperate agent type module. Code should depend only on that one module.
 //Extract the state logic to a seperate module
 //Convert the classes to function components
 const CardList = (props) => (
@@ -20,6 +19,9 @@ const CardList = (props) => (
 
 class Form extends React.Component {
   state = { userName: "", error: null };
+  changeEvent = (event) =>{
+    this.setState({userName: event.target.value});
+  }
   clickEvent = async (event) => {
     try {
       //Testing the event handler try catch block
@@ -35,7 +37,7 @@ class Form extends React.Component {
       }
        else {
         this.props.onSubmit(resp.data);
-        this.setState({ username: "" });
+        this.setState({ userName: "" });
       }
     } catch (error) {
       this.setState({ error: error });
@@ -53,7 +55,7 @@ class Form extends React.Component {
         <input
           type="text"
           value={this.state.userName}
-          onChange={(event) => this.setState({ userName: event.target.value })}
+          onChange={event => this.changeEvent(event)}
           placeholder="github username"
         ></input>
         <button onClick={this.clickEvent}>AddCard</button>
