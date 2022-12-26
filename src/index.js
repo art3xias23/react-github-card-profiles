@@ -2,11 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-import axios from "axios";
 import ErrorBoundary from "./ErrorBoundary.js";
+import { getUsernameResponse } from "./AxiosClient";
 
 //Tasks
-//Wrong input
+
 //Extract the axios library to a seperate agent type module. Code should depend only on that one module.
 //Extract the state logic to a seperate module
 //Convert the classes to function components
@@ -25,19 +25,7 @@ class Form extends React.Component {
       //Testing the event handler try catch block
       //throw "Caught some error";
       event.preventDefault();
-      var resp;
-      try {
-         resp = await axios.get(
-          `https://api.github.com/users/${this.state.userName}`
-        );
-      } catch (error) {
-        resp = error.response
-        console.log("Axios request threw an error", error);
-        console.log(error.response.status);
-        console.log(error.response.data);
-        console.log(error.response.headers);
-      }
-
+      const resp = await getUsernameResponse(this.state.userName)
       if (resp.status == 404) {
         throw "Could not find username. Please refresh"
         console.log(resp.message);
