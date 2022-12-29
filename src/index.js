@@ -10,13 +10,12 @@ import { getUsernameResponse } from "./AxiosClient";
 //Convert the classes to function components
 
 function CardList(props) {
-  console.log("Card List Props: " , props)
-  // console.log("Card List Profiles: ", profiles)
+  console.log(`Card List Props: ${props}`);
   var data = Object.values(props);
-  console.log("Card List Data: ", data);
+  console.log("Card List Data: ", data[0]);
   return (
     <div>
-      {data.map(profile => (
+      {data[0].map(profile => (
         <Card key={profile.id} {...profile} />
       ))}
     </div>
@@ -77,15 +76,15 @@ function Form(props) {
 
 // class Card extends React.Component {
 function Card(props) {
-  var profile = props;
-  console.log("Card Profile: ", profile);
+  console.log(`Card Profile Object Data: ${props["0"]}`);
+  console.log(`Card Profile Json Data: ${JSON.stringify(props["0"])}`);
   return (
     <>
       <div className="github-profile">
-        <img src={profile.avatar_url} />
+        <img src={props.avatar_url} />
         <div className="info">
-          <div className="name">{profile.name}</div>
-          <div className="company">{profile.company}</div>
+          <div className="name">{props.name}</div>
+          <div className="company">{props.company}</div>
         </div>
       </div>
     </>
@@ -94,12 +93,13 @@ function Card(props) {
 
 // class App extends React.Component {
 function App(props) {
-  const [profiles, updateProfiles] = useState([{}]);
+  const [profiles, setProfiles] = React.useState([]);
   const [error, updateError] = useState(null);
   const addNewProfile = (profileData) => {
     try {
       //throw "App component error";
-      updateProfiles(profileData);
+      setProfiles([...profiles, profileData]);
+      console.log("App Profiles: ", profiles);
     } catch (error) {
       // this.setState({ error: error });
       updateError(error);
